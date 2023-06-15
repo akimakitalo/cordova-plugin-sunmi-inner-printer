@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-sunmi-inner-printer",
-  "description": "Cordova/Ionic Sunmi V1 Inner Printer",
+  "description": "Cordova/Ionic Sunmi T2 Printer",
   "cordova": {
     "id": "cordova-plugin-sunmi-inner-printer",
     "platforms": [
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tmalbonph/cordova-plugin-sunmi-inner-printer.git"
+    "url": "git://github.com/akimakitalo/cordova-plugin-sunmi-inner-printer.git"
   },
   "author": {
     "name": "tmalbonph"
@@ -22,6 +22,6 @@
       }
     }
   },
-  "version": "1.1.1",
+  "version": "1.2.0",
   "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }

@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
 
+import woyou.aidlservice.jiuiv5.WoyouConsts;
 import woyou.aidlservice.jiuiv5.ICallback;
 import woyou.aidlservice.jiuiv5.IWoyouService;
 
@@ -26,10 +27,11 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.sunmi.utils.BitmapUtils;
-import com.sunmi.utils.ThreadPoolManager;
 
 public class Printer extends CordovaPlugin {
   private static final String TAG = "SunmiInnerPrinter";
+
+  private WoyouConsts woyouConsts;
 
   private BitmapUtils bitMapUtils;
   private IWoyouService woyouService;
@@ -96,12 +98,42 @@ public class Printer extends CordovaPlugin {
     } else if (action.equals("printerSelfChecking")) {
       printerSelfChecking(callbackContext);
       return true;
-    } else if (action.equals("getPrinterSerialNo")) {
+    } else if (action.equals("cutPaper")) {
+      cutPaper(callbackContext);
+      return true;
+		} else if (action.equals("getPrinterSerialNo")) {
       getPrinterSerialNo(callbackContext);
       return true;
     } else if (action.equals("getPrinterVersion")) {
       getPrinterVersion(callbackContext);
       return true;
+    } else if (action.equals("getPrinterMode")) {
+      getPrinterMode(callbackContext);
+      return true;
+    } else if (action.equals("getPrinterDensity")) {
+      getPrinterDensity(callbackContext);
+      return true;
+    } else if (action.equals("getPrinterPaper")) {
+      getPrinterPaper(callbackContext);
+      return true;
+    } else if (action.equals("getFirmwareStatus")) {
+      getFirmwareStatus(callbackContext);
+      return true;
+    } else if (action.equals("getServiceVersion")) {
+      getServiceVersion(callbackContext);
+      return true;
+    } else if (action.equals("getPrinterModal")) {
+      getPrinterModal(callbackContext);
+      return true;
+    } else if (action.equals("getCutPaperTimes")) {
+      getCutPaperTimes(callbackContext);
+      return true;
+    } else if (action.equals("getPrinterBBMDistance")) {
+      getPrinterBBMDistance(callbackContext);
+      return true;		
+		} else if (action.equals("updatePrinterState")) {
+      updatePrinterState(callbackContext);
+      return true;	
     } else if (action.equals("hasPrinter")) {
       hasPrinter(callbackContext);
       return true;
@@ -123,6 +155,9 @@ public class Printer extends CordovaPlugin {
     } else if (action.equals("setFontSize")) {
       setFontSize((float) data.getDouble(0), callbackContext);
       return true;
+		} else if (action.equals("setPrinterStyle")) {
+      setPrinterStyle(data.getInt(0), data.getInt(1), callbackContext);
+      return true;
     } else if (action.equals("printTextWithFont")) {
       printTextWithFont(data.getString(0), data.getString(1), (float) data.getDouble(2), callbackContext);
       return true;
@@ -141,8 +176,8 @@ public class Printer extends CordovaPlugin {
     } else if (action.equals("printOriginalText")) {
       printOriginalText(data.getString(0), callbackContext);
       return true;
-    } else if (action.equals("printString")) {
-      printString(data.getString(0), callbackContext);
+    } else if (action.equals("printText")) {
+      printText(data.getString(0), callbackContext);
       return true;
     } else if (action.equals("printerStatusStartListener")) {
       printerStatusStartListener(callbackContext);
@@ -157,15 +192,14 @@ public class Printer extends CordovaPlugin {
 
   public void printerInit(final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printerInit(new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -180,6 +214,11 @@ public class Printer extends CordovaPlugin {
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
             }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
+            }						
           });
         } catch (Exception e) {
           e.printStackTrace();
@@ -192,15 +231,14 @@ public class Printer extends CordovaPlugin {
 
   public void printerSelfChecking(final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printerSelfChecking(new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -214,6 +252,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -240,7 +283,7 @@ public class Printer extends CordovaPlugin {
   }
 
   public void getPrinterVersion(final CallbackContext callbackContext) {
-    try {
+    try {		
       callbackContext.success(getPrinterVersion());
     } catch (Exception e) {
       Log.i(TAG, "ERROR: " + e.getMessage());
@@ -253,6 +296,76 @@ public class Printer extends CordovaPlugin {
     return printerService.getPrinterVersion();
   }
 
+  public void getPrinterMode(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getPrinterMode());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getPrinterMode() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getPrinterMode();
+  }
+	
+  public void getPrinterDensity(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getPrinterDensity());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getPrinterDensity() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getPrinterDensity();
+  }
+
+	public void getPrinterPaper(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getPrinterPaper());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getPrinterPaper() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getPrinterPaper();
+  }
+	
+	public void getFirmwareStatus(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getFirmwareStatus());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getFirmwareStatus() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getFirmwareStatus();
+  }
+
+	public void getServiceVersion(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getServiceVersion());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private String getServiceVersion() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getServiceVersion();
+  }
+
   public void getPrinterModal(final CallbackContext callbackContext) {
     try {
       callbackContext.success(getPrinterModal());
@@ -263,14 +376,55 @@ public class Printer extends CordovaPlugin {
   }
 
   private String getPrinterModal() throws Exception {
-    // Caution: This method is not fully test -- Januslo 2018-08-11
     final IWoyouService printerService = woyouService;
     return printerService.getPrinterModal();
   }
 
+	public void getCutPaperTimes(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getCutPaperTimes());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getCutPaperTimes() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getCutPaperTimes();
+  }
+
+	public void getPrinterBBMDistance(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getPrinterBBMDistance());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getPrinterBBMDistance() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getPrinterBBMDistance();
+  }
+
+	public void updatePrinterState(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(updatePrinterState());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int updatePrinterState() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.updatePrinterState();
+  }
+
   public void hasPrinter(final CallbackContext callbackContext) {
     try {
-      callbackContext.success(hasPrinter());
+	  callbackContext.success(hasPrinter());
     } catch (Exception e) {
       Log.i(TAG, "ERROR: " + e.getMessage());
       callbackContext.error(e.getMessage());
@@ -284,52 +438,30 @@ public class Printer extends CordovaPlugin {
   }
 
   public void getPrintedLength(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getPrintedLength());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getPrintedLength() throws Exception {
     final IWoyouService printerService = woyouService;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          printerService.getPrintedLength(new ICallback.Stub() {
-            @Override
-            public void onRunResult(boolean isSuccess) {
-              if (isSuccess) {
-                callbackContext.success("");
-              } else {
-                callbackContext.error(isSuccess + "");
-              }
-            }
-
-            @Override
-            public void onReturnString(String result) {
-              callbackContext.success(result);
-            }
-
-            @Override
-            public void onRaiseException(int code, String msg) {
-              callbackContext.error(msg);
-            }
-          });
-        } catch (Exception e) {
-          e.printStackTrace();
-          Log.i(TAG, "ERROR: " + e.getMessage());
-          callbackContext.error(e.getMessage());
-        }
-      }
-    });
+    return printerService.getPrintedLength();
   }
 
   public void lineWrap(int n, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final int count = n;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.lineWrap(count, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -343,6 +475,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -357,15 +494,14 @@ public class Printer extends CordovaPlugin {
   public void sendRAWData(String base64EncriptedData, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final byte[] d = Base64.decode(base64EncriptedData, Base64.DEFAULT);
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.sendRAWData(d, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -379,6 +515,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -393,15 +534,14 @@ public class Printer extends CordovaPlugin {
   public void setAlignment(int alignment, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final int align = alignment;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.setAlignment(align, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -415,6 +555,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -429,15 +574,14 @@ public class Printer extends CordovaPlugin {
   public void setFontName(String typeface, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final String tf = typeface;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.setFontName(tf, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -451,6 +595,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -465,15 +614,14 @@ public class Printer extends CordovaPlugin {
   public void setFontSize(float fontsize, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final float fs = fontsize;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.setFontSize(fs, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -487,6 +635,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -497,21 +650,35 @@ public class Printer extends CordovaPlugin {
       }
     });
   }
+		
+	public void setPrinterStyle(int fontkey, int fontvalue, final CallbackContext callbackContext) {
+		try {
+			final IWoyouService printerService = woyouService;
+			
+			final int fk = fontkey;
+			final int fv = fontvalue;
+			
+			printerService.setPrinterStyle(fk, fv);
+			callbackContext.success(1);
+		} catch (Exception e) {
+			Log.i(TAG, "ERROR: " + e.getMessage());
+			callbackContext.error(e.getMessage());
+		}
+  }
 
   public void printTextWithFont(String text, String typeface, float fontsize, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final String txt = text;
     final String tf = typeface;
     final float fs = fontsize;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printTextWithFont(txt, tf, fs, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -525,6 +692,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -566,15 +738,14 @@ public class Printer extends CordovaPlugin {
         Log.i(TAG, "ERROR ALIGN: " + e.getMessage());
       }
     }
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printColumnsText(clst, clsw, clsa, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -588,6 +759,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -604,15 +780,14 @@ public class Printer extends CordovaPlugin {
       final IWoyouService printerService = woyouService;
       byte[] decoded = Base64.decode(data, Base64.DEFAULT);
       final Bitmap bitMap = bitMapUtils.decodeBitmap(decoded, width, height);
-      ThreadPoolManager.getInstance().executeTask(new Runnable() {
-        @Override
+      cordova.getThreadPool().execute(new Runnable() {
         public void run() {
           try {
             printerService.printBitmap(bitMap, new ICallback.Stub() {
               @Override
               public void onRunResult(boolean isSuccess) {
                 if (isSuccess) {
-                  callbackContext.success("");
+                  callbackContext.success(1);
                 } else {
                   callbackContext.error(isSuccess + "");
                 }
@@ -627,6 +802,11 @@ public class Printer extends CordovaPlugin {
               public void onRaiseException(int code, String msg) {
                 callbackContext.error(msg);
               }
+							
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
+            }
             });
           } catch (Exception e) {
             e.printStackTrace();
@@ -650,15 +830,14 @@ public class Printer extends CordovaPlugin {
     final int w = width;
     final int tp = textPosition;
 
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printBarCode(d, s, h, w, tp, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -672,6 +851,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -688,15 +872,14 @@ public class Printer extends CordovaPlugin {
     final String d = data;
     final int size = moduleSize;
     final int level = errorLevel;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printQRCode(d, size, level, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -710,6 +893,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {
@@ -724,15 +912,14 @@ public class Printer extends CordovaPlugin {
   public void printOriginalText(String text, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final String txt = text;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printOriginalText(txt, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -747,6 +934,11 @@ public class Printer extends CordovaPlugin {
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
             }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
+            }
           });
         } catch (Exception e) {
           e.printStackTrace();
@@ -756,11 +948,50 @@ public class Printer extends CordovaPlugin {
       }
     });
   }
+	
+	public void cutPaper(final CallbackContext callbackContext) {
+    final IWoyouService printerService = woyouService;
+		
+		cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+        try {
+          printerService.cutPaper(new ICallback.Stub() {
+            @Override
+            public void onRunResult(boolean isSuccess) {
+              if (isSuccess) {
+                callbackContext.success(1);
+              } else {
+                callbackContext.error(isSuccess + "");
+              }
+            }
+
+            @Override
+            public void onReturnString(String result) {
+              callbackContext.success(result);
+            }
+
+            @Override
+            public void onRaiseException(int code, String msg) {
+              callbackContext.error(msg);
+            }
+
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
+            }
+          });
+        } catch (Exception e) {
+          e.printStackTrace();
+          Log.i(TAG, "ERROR: " + e.getMessage());
+          callbackContext.error(e.getMessage());
+        }
+      }
+		});		
+  }
 
   public void commitPrinterBuffer() {
     final IWoyouService printerService = woyouService;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.commitPrinterBuffer();
@@ -775,8 +1006,7 @@ public class Printer extends CordovaPlugin {
   public void enterPrinterBuffer(boolean clean) {
     final IWoyouService printerService = woyouService;
     final boolean c = clean;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.enterPrinterBuffer(c);
@@ -791,8 +1021,7 @@ public class Printer extends CordovaPlugin {
   public void exitPrinterBuffer(boolean commit) {
     final IWoyouService printerService = woyouService;
     final boolean com = commit;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.exitPrinterBuffer(com);
@@ -804,18 +1033,17 @@ public class Printer extends CordovaPlugin {
     });
   }
 
-  public void printString(String message, final CallbackContext callbackContext) {
+  public void printText(String message, final CallbackContext callbackContext) {
     final IWoyouService printerService = woyouService;
     final String msgs = message;
-    ThreadPoolManager.getInstance().executeTask(new Runnable() {
-      @Override
+    cordova.getThreadPool().execute(new Runnable() {
       public void run() {
         try {
           printerService.printText(msgs, new ICallback.Stub() {
             @Override
             public void onRunResult(boolean isSuccess) {
               if (isSuccess) {
-                callbackContext.success("");
+                callbackContext.success(1);
               } else {
                 callbackContext.error(isSuccess + "");
               }
@@ -829,6 +1057,11 @@ public class Printer extends CordovaPlugin {
             @Override
             public void onRaiseException(int code, String msg) {
               callbackContext.error(msg);
+            }
+						
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
             }
           });
         } catch (Exception e) {

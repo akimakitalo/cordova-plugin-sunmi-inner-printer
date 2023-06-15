@@ -20,7 +20,7 @@
       </feature>
     </config-file>
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
-      <receiver android:name="com.sunmi.innerprinter.PrinterStatusReceiver" android:enabled="true">
+      <receiver android:name="com.sunmi.innerprinter.PrinterStatusReceiver" android:enabled="true" android:exported="true">
         <intent-filter android:priority="1000">
           <action android:name="woyou.aidlservice.jiuv5.OUT_OF_PAPER_ACTION" />
           <action android:name="woyou.aidlservice.jiuv5.ERROR_ACTION" />
@@ -33,19 +33,18 @@
           <action android:name="woyou.aidlservice.jiuv5.FIRMWARE_UPDATING_ACITON" />
         </intent-filter>
       </receiver>
-      <service android:name="woyou.aidlservice.jiuiv5.IWoyouService">
+      <service android:name="woyou.aidlservice.jiuiv5.IWoyouService" android:exported="true">
         <intent-filter>
           <action android:name="woyou.aidlservice.jiuiv5.IWoyouService" />
         </intent-filter>
       </service>
     </config-file>
-    <source-file src="src/android/com/sunmi/innerprinter/Printer.java" target-dir="src/com/sunmi/innerprinter/"/>
-    <source-file src="src/android/com/sunmi/innerprinter/PrinterStatusReceiver.java" target-dir="src/com/sunmi/innerprinter/"/>
-    <source-file src="src/android/com/sunmi/utils/BitmapUtils.java" target-dir="src/com/sunmi/utils/"/>
-    <source-file src="src/android/com/sunmi/utils/ThreadPoolManager.java" target-dir="src/com/sunmi/utils/"/>
-    <source-file src="src/android/com/sunmi/trans/TransBean.java" target-dir="src/com/sunmi/trans/"/>
-    <source-file src="src/android/com/sunmi/trans/TransBean.aidl" target-dir="src/com/sunmi/trans/"/>
-    <source-file src="src/android/woyou/aidlservice/jiuiv5/IWoyouService.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
-    <source-file src="src/android/woyou/aidlservice/jiuiv5/ICallback.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
+		<source-file src="src/android/com/sunmi/innerprinter/WoyouConsts.java" target-dir="src/com/sunmi/innerprinter/"/>
+	    <source-file src="src/android/com/sunmi/innerprinter/Printer.java" target-dir="src/com/sunmi/innerprinter/"/>
+	    <source-file src="src/android/com/sunmi/innerprinter/PrinterStatusReceiver.java" target-dir="src/com/sunmi/innerprinter/"/>
+	    <source-file src="src/android/com/sunmi/utils/BitmapUtils.java" target-dir="src/com/sunmi/utils/"/>
+	    <source-file src="src/android/woyou/aidlservice/jiuiv5/IWoyouService.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
+	    <source-file src="src/android/woyou/aidlservice/jiuiv5/ICallback.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
+		<source-file src="src/android/woyou/aidlservice/jiuiv5/ITax.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
   </platform>
 </plugin>

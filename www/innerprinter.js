@@ -1,66 +1,153 @@
-exec = require('cordova/exec');
-
 module.exports = {
-
-  printerInit: function (resolve, reject) {
-    exec(resolve, reject, "Printer", "printerInit", []);
+  printerInit: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printerInit", []);
+    });
   },
-  printerSelfChecking: function (resolve, reject) {
-    exec(resolve, reject, "Printer", "printerSelfChecking", []);
+  printerSelfChecking: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printerSelfChecking", []);
+    });
   },
-  getPrinterSerialNo: function (resolve, reject) {
-    exec(resolve, reject, "Printer", "getPrinterSerialNo", []);
+	cutPaper: function () {
+		return new Promise(function (resolve, reject) {
+			cordova.exec(resolve, reject, "Printer", "cutPaper", []);
+		});
+  },	
+	getPrinterSerialNo: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterSerialNo", []);
+    });
+  },	
+  getPrinterVersion: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterVersion", []);
+    });
   },
-  getPrinterVersion: function (resolve, reject) {
-    exec(resolve, reject, "Printer", "getPrinterVersion", []);
+	getPrinterMode: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterMode", []);
+    });
   },
-  hasPrinter: function (resolve, reject) {
-    exec(resolve, reject, "Printer", "hasPrinter", []);
+	getPrinterDensity: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterDensity", []);
+    });
   },
-  getPrintedLength: function (resolve, reject) {
-    exec(resolve, reject, "Printer", "getPrintedLength", []);
+	getPrinterPaper: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterPaper", []);
+    });
   },
-  lineWrap: function (count, resolve, reject) {
-    exec(resolve, reject, "Printer", "lineWrap", [count]);
+	getFirmwareStatus: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getFirmwareStatus", []);
+    });
   },
-  sendRAWData: function (base64Data, resolve, reject) {
-    exec(resolve, reject, "Printer", "sendRAWData", [base64Data]);
+	getServiceVersion: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getServiceVersion", []);
+    });
   },
-  setAlignment: function (alignment, resolve, reject) {
-    exec(resolve, reject, "Printer", "setAlignment", [alignment]);
+	getPrinterModal: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterModal", []);
+    });
   },
-  setFontName: function (typeface, resolve, reject) {
-    exec(resolve, reject, "Printer", "setFontName", [typeface]);
+	getCutPaperTimes: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getCutPaperTimes", []);
+    });
+  },	
+	getPrinterBBMDistance: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrinterBBMDistance", []);
+    });
+  },	
+	updatePrinterState: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "updatePrinterState", []);
+    });
   },
-  setFontSize: function (fontSize, resolve, reject) {
-    exec(resolve, reject, "Printer", "setFontSize", [fontSize]);
+  hasPrinter: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "hasPrinter", []);
+    });
   },
-  printTextWithFont: function (text, typeface, fontSize, resolve, reject) {
-    exec(resolve, reject, "Printer", "printTextWithFont", [text, typeface, fontSize]);
+  getPrintedLength: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getPrintedLength", []);
+    });
   },
-  printColumnsText: function (colsTextArr, colsWidthArr, colsAlign, resolve, reject) {
-    exec(resolve, reject, "Printer", "printColumnsText", [colsTextArr, colsWidthArr, colsAlign]);
+  lineWrap: function (count) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "lineWrap", [count]);
+    });
   },
-  printBitmap: function (base64Data, width, height, resolve, reject) {
-    exec(resolve, reject, "Printer", "printBitmap", [base64Data, width, height]);
+  sendRAWData: function (base64Data) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "sendRAWData", [base64Data]);
+    });
   },
-  printBarCode: function (barCodeData, symbology, width, height, textPosition, resolve, reject) {
-    exec(resolve, reject, "Printer", "printBarCode", [barCodeData, symbology, width, height, textPosition]);
+  setAlignment: function (alignment) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "setAlignment", [alignment]);
+    });
   },
-  printQRCode: function (qrCodeData, moduleSize, errorLevel, resolve, reject) {
-    exec(resolve, reject, "Printer", "printQRCode", [qrCodeData, moduleSize, errorLevel]);
+  setFontName: function (typeface) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "setFontName", [typeface]);
+    });
   },
-  printOriginalText: function (text, resolve, reject) {
-    exec(resolve, reject, "Printer", "printOriginalText", [text]);
+  setFontSize: function (fontSize) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "setFontSize", [fontSize]);
+    });
   },
-  printString: function (text, resolve, reject) {
-    exec(resolve, reject, "Printer", "printString", [text]);
+	setPrinterStyle: function (fontKey, fontValue) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "setPrinterStyle", [fontKey, fontValue]);
+    });
   },
-  printerStatusStartListener: function (onSuccess, onError) {
-    exec(onSuccess, onError, "Printer", "printerStatusStartListener", []);
+  printTextWithFont: function (text, typeface, fontSize) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printTextWithFont", [text, typeface, fontSize]);
+    });
   },
-  printerStatusStopListener: function () {
-    exec(function () {}, function () {}, "Printer", "printerStatusStopListener", []);
+  printColumnsText: function (colsTextArr, colsWidthArr, colsAlign) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printColumnsText", [colsTextArr, colsWidthArr, colsAlign]);
+    });
+  },
+  printBitmap: function (base64Data, width, height) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printBitmap", [base64Data, width, height]);
+    });
+  },
+  printBarCode: function (barCodeData, symbology, width, height, textPosition) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printBarCode", [barCodeData, symbology, width, height, textPosition]);
+    });
+  },
+  printQRCode: function (qrCodeData, moduleSize, errorLevel) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printQRCode", [qrCodeData, moduleSize, errorLevel]);
+    });
+  },
+  printOriginalText: function (text) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printOriginalText", [text]);
+    });
+  },
+  printText: function (text) {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "printText", [text]);
+    });
+  },
+  printerStatusStartListener: function(onSuccess, onError) {
+    cordova.exec(onSuccess, onError, "Printer", "printerStatusStartListener", []);
+  },
+  printerStatusStopListener: function() {
+    cordova.exec(function() {}, function() {}, "Printer", "printerStatusStopListener", []);
   }
-
 }
