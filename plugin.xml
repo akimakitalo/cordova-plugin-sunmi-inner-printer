@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin
   xmlns="http://www.phonegap.com/ns/plugins/1.0"
-  xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-sunmi-inner-printer" version="1.1.1">
+  xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-sunmi-inner-printer" version="1.2.1">
   <name>SunmiInnerPrinter</name>
   <engines>
     <engine name="cordova" version=">=7.1.0"/>
@@ -13,6 +13,7 @@
   <platform name="android">
     <preference name="ANDROID_SUPPORT_V13_VERSION" default="27.+"/>
     <framework src="com.sunmi:sunmiui:latest.release"/>
+    <framework src="com.sunmi:printerlibrary:latest.release"/>
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="Printer">
         <param name="android-package" value="com.sunmi.innerprinter.Printer"/>
@@ -39,6 +40,11 @@
         </intent-filter>
       </service>
     </config-file>
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<queries>
+				<package android:name="woyou.aidlservice.jiuiv5" />
+			</queries>
+		</config-file>
 		<source-file src="src/android/com/sunmi/innerprinter/WoyouConsts.java" target-dir="src/com/sunmi/innerprinter/"/>
 	    <source-file src="src/android/com/sunmi/innerprinter/Printer.java" target-dir="src/com/sunmi/innerprinter/"/>
 	    <source-file src="src/android/com/sunmi/innerprinter/PrinterStatusReceiver.java" target-dir="src/com/sunmi/innerprinter/"/>
