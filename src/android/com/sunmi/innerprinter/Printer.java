@@ -98,6 +98,9 @@ public class Printer extends CordovaPlugin {
     } else if (action.equals("printerSelfChecking")) {
       printerSelfChecking(callbackContext);
       return true;
+    } else if (action.equals("openDrawer")) {
+      openDrawer(callbackContext);
+      return true;
     } else if (action.equals("cutPaper")) {
       cutPaper(callbackContext);
       return true;
@@ -110,6 +113,9 @@ public class Printer extends CordovaPlugin {
     } else if (action.equals("getPrinterMode")) {
       getPrinterMode(callbackContext);
       return true;
+    } else if (action.equals("getDrawerStatus")) {
+      getDrawerStatus(callbackContext);
+      return true;      
     } else if (action.equals("getPrinterDensity")) {
       getPrinterDensity(callbackContext);
       return true;
@@ -127,6 +133,9 @@ public class Printer extends CordovaPlugin {
       return true;
     } else if (action.equals("getCutPaperTimes")) {
       getCutPaperTimes(callbackContext);
+      return true;
+    } else if (action.equals("getOpenDrawerTimes")) {
+      getOpenDrawerTimes(callbackContext);
       return true;
     } else if (action.equals("getPrinterBBMDistance")) {
       getPrinterBBMDistance(callbackContext);
@@ -268,6 +277,46 @@ public class Printer extends CordovaPlugin {
     });
   }
 
+  public void openDrawer(final CallbackContext callbackContext) {
+    final IWoyouService printerService = woyouService;
+		
+		cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+        try {
+          printerService.openDrawer(new ICallback.Stub() {
+            @Override
+            public void onRunResult(boolean isSuccess) {
+              if (isSuccess) {
+                callbackContext.success(1);
+              } else {
+                callbackContext.error(isSuccess + "");
+              }
+            }
+
+            @Override
+            public void onReturnString(String result) {
+              callbackContext.success(result);
+            }
+
+            @Override
+            public void onRaiseException(int code, String msg) {
+              callbackContext.error(msg);
+            }
+
+            @Override
+            public void onPrintResult(int code, String msg) {
+              callbackContext.success(msg);
+            }
+          });
+        } catch (Exception e) {
+          e.printStackTrace();
+          Log.i(TAG, "ERROR: " + e.getMessage());
+          callbackContext.error(e.getMessage());
+        }
+      }
+		});		
+  }
+
   public void getPrinterSerialNo(final CallbackContext callbackContext) {
     try {
       callbackContext.success(getPrinterSerialNo());
@@ -392,6 +441,34 @@ public class Printer extends CordovaPlugin {
   private int getCutPaperTimes() throws Exception {
     final IWoyouService printerService = woyouService;
     return printerService.getCutPaperTimes();
+  }
+
+	public void getOpenDrawerTimes(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getOpenDrawerTimes());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getOpenDrawerTimes() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getOpenDrawerTimes();
+  }
+
+  public void getDrawerStatus(final CallbackContext callbackContext) {
+    try {
+      callbackContext.success(getDrawerStatus());
+    } catch (Exception e) {
+      Log.i(TAG, "ERROR: " + e.getMessage());
+      callbackContext.error(e.getMessage());
+    }
+  }
+
+  private int getDrawerStatus() throws Exception {
+    final IWoyouService printerService = woyouService;
+    return printerService.getDrawerStatus();
   }
 
 	public void getPrinterBBMDistance(final CallbackContext callbackContext) {

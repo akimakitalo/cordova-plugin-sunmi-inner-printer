@@ -9,6 +9,11 @@ module.exports = {
       cordova.exec(resolve, reject, "Printer", "printerSelfChecking", []);
     });
   },
+  openDrawer: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "openDrawer", []);
+    });
+  },  
 	cutPaper: function () {
 		return new Promise(function (resolve, reject) {
 			cordova.exec(resolve, reject, "Printer", "cutPaper", []);
@@ -59,6 +64,16 @@ module.exports = {
       cordova.exec(resolve, reject, "Printer", "getCutPaperTimes", []);
     });
   },	
+	getOpenDrawerTimes: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getOpenDrawerTimes", []);
+    });
+  },
+	getDrawerStatus: function () {
+    return new Promise(function (resolve, reject) {
+      cordova.exec(resolve, reject, "Printer", "getDrawerStatus", []);
+    });
+  },  
 	getPrinterBBMDistance: function () {
     return new Promise(function (resolve, reject) {
       cordova.exec(resolve, reject, "Printer", "getPrinterBBMDistance", []);

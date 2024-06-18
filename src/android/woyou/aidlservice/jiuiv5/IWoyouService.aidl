@@ -278,7 +278,7 @@ interface IWoyouService
     *   返回：true 钱箱打开 false 钱箱关闭
     *   支持版本:T2-v4.1.0
     */
-    boolean getDrawerStatus();
+    int getDrawerStatus();
 
     /**
     * 获取当前打印浓度
