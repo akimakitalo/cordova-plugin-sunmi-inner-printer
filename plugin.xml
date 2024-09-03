@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin
   xmlns="http://www.phonegap.com/ns/plugins/1.0"
-  xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-sunmi-inner-printer" version="1.2.2">
+  xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-sunmi-inner-printer" version="1.2.3">
   <name>SunmiInnerPrinter</name>
   <engines>
     <engine name="cordova" version=">=7.1.0"/>
@@ -12,7 +12,6 @@
   </js-module>
   <platform name="android">
     <preference name="ANDROID_SUPPORT_V13_VERSION" default="27.+"/>
-    <framework src="com.sunmi:sunmiui:latest.release"/>
     <framework src="com.sunmi:printerlibrary:latest.release"/>
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="Printer">

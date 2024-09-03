@@ -22,6 +22,6 @@
       }
     }
   },
-  "version": "1.2.2",
+  "version": "1.2.3",
   "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
